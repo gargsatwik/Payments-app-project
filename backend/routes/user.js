@@ -21,6 +21,11 @@ const updateSchema = z.object({
   password: z.string().optional(),
 });
 
+const signInSchema = z.object({
+  username: z.string().email(),
+  password: z.string(),
+});
+
 userRouter.post("/signup", async (req, res) => {
   const data = req.body;
   if (await Users.findOne(data)) {
@@ -45,22 +50,34 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
-userRouter.post("/sigin", async (req, res, cb) => {
+userRouter.post("/sigin", async (req, res) => {
   const data = req.body;
+  const { success } = signInSchema.safeParse(data);
+  if (!success) {
+    return res.status(411).json({
+      message: "Email already taken / Incorrect inputs",
+    });
+  }
   const userName = data.username;
   const user = await Users.findOne(userName);
   if (!user) {
     res.status(403).json("User does not exist");
   } else {
     bcrypt.compare(data.password, user.password, (err, result) => {
-      //confirm
       if (err) {
-        return cb(err);
+        res.json({
+          message: "Error while logging in",
+        });
       } else {
         if (result) {
-          cb(null, user);
-        } else {
-          cb(null, false);
+          const token = jwt.sign(
+            {
+              userId: user._id,
+            },
+            JWT_SECRET
+          );
+          res.json({ token: token });
+          return;
         }
       }
     });

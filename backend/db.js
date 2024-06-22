@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 import dotenv from "dotenv";
-import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 
 dotenv.config();
@@ -12,12 +11,11 @@ const usersSchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   password: { type: String, required: true },
-  _id: { type: String, default: uuidv4() },
 });
 
 const balancesSchema = new Schema({
   balance: { type: Number, default: 0 },
-  _id: { type: Schema.Types.ObjectId, ref: "Users" },
+  userId: { type: Schema.Types.ObjectId, ref: "Users" },
 });
 
 export const Users = mongoose.model("Users", usersSchema);
@@ -30,11 +28,12 @@ async function insertUser(user) {
   const updatedField = {
     password: hashedPassword,
   };
-  await Users.create({ ...user, ...updatedField });
+  const newUser = await Users.create({ ...user, ...updatedField });
   await Balances.create({
-    _id: user._id,
+    userId: user._id,
     balance: 1 + Math.random() * 10000,
   });
+  return newUser;
 }
 
 async function updateUser(req) {
