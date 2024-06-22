@@ -1,4 +1,4 @@
-import mongoose, { Mongoose, Schema, mongo } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
@@ -12,7 +12,7 @@ const usersSchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   password: { type: String, required: true },
-  _id: uuidv4(),
+  _id: { type: String, default: uuidv4() },
 });
 
 const balancesSchema = new Schema({
@@ -53,3 +53,5 @@ async function updateUser(req) {
     _id: req.userId,
   });
 }
+
+export { insertUser, updateUser };

@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { z } from "zod";
-import { Users, Balances, insertUser, updateUser } from "../db";
+import { Users, insertUser, updateUser } from "../db.js";
 import jwt from "jsonwebtoken";
-import JWT_SECRET from "./config";
+import JWT_SECRET from "./config.js";
 import bcrypt from "bcrypt";
-import { authMiddleware } from "../middleware";
+import { authMiddleware } from "../middleware.js";
 
 const userRouter = Router();
 
@@ -102,4 +102,4 @@ userRouter.get("/bulk", async (req, res) => {
   });
 });
 
-module.exports(userRouter);
+export { userRouter };

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { Balances } from "../db";
-import authMiddleware from "../middleware";
+import { Balances } from "../db.js";
+import { authMiddleware } from "../middleware.js";
 import mongoose from "mongoose";
 
 const accountRouter = Router();
@@ -41,4 +41,4 @@ accountRouter.post("/transfer", async (req, res) => {
   res.json({ message: "Transaction complete" });
 });
 
-module.exports(accountRouter);
+export { accountRouter };

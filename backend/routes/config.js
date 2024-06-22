@@ -1,2 +1,2 @@
 const JWT_SECRET = "satwiksecret";
-module.exports(JWT_SECRET);
+export default JWT_SECRET;
