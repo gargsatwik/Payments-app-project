@@ -1,16 +1,15 @@
 import express from "express";
-import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+import { apiRouter } from "./routes/index";
+import "cors";
 
 dotenv.config();
 const app = express();
 const port = 3000;
 
-const DB_URI = process.env.DB_URI;
-const client = new MongoClient(DB_URI);
-await client.connect();
-const db = client.db("Paytm");
-const collection = db.collection("Users");
+app.use(cors());
+app.use(express.json());
+app.use("/api/v1", apiRouter);
 
 app.get("/", (req, res) => {});
 
